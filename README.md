@@ -5,3 +5,5 @@
     <li>postgreSQL</li>
     <li>Sail</li>
 </ul>
+
+<p>Для запуска проекта использовать Makefile с командой 'make up'</p>
