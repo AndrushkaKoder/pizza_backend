@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
+class ProductType extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'status_id',
-        'delivery_time',
-        'address',
-        'closed',
+        'title'
     ];
 
+    public const T_PIZZA = 1;
+    public const T_DRINK = 2;
+    public const T_SNACKS = 3;
 }

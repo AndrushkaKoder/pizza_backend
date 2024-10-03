@@ -17,3 +17,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/storage/app/public
+/storage/app/public/2024
