@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 
 class ParseMenu extends Command
 {
-    protected $signature = 'app:parse {--pizza}';
+    protected $signature = 'app:parse';
     protected $description = 'Parse menu from Peppers Pizza =)';
 
     private string $pizzaUrl = 'https://pepperspizza.ru/api/json/menu/list?restaurant=f64da9e1-8113-4354-aaf3-a4d676f926b3&groupId=efdd71a8-335f-4546-a672-ad88006d473c';
