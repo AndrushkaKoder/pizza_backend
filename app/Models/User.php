@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
 use Orchid\Filters\Types\WhereDateStartEnd;
@@ -10,43 +13,27 @@ use Orchid\Platform\Models\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+
+    use HasApiTokens;
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'phone'
     ];
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',
         'permissions',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'permissions' => 'array',
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * The attributes for which you can use filters in url.
-     *
-     * @var array
-     */
     protected $allowedFilters = [
         'id' => Where::class,
         'name' => Like::class,
@@ -55,11 +42,6 @@ class User extends Authenticatable
         'created_at' => WhereDateStartEnd::class,
     ];
 
-    /**
-     * The attributes for which can use sort in url.
-     *
-     * @var array
-     */
     protected $allowedSorts = [
         'id',
         'name',
@@ -68,13 +50,18 @@ class User extends Authenticatable
         'created_at',
     ];
 
+    public function setPasswordAttribute($password): void
+    {
+        $this->attributes['password'] = Hash::make($password);
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'user_id');
     }
 
-    public function baskets(): HasMany
+    public function basket(): HasOne
     {
-        return $this->hasMany(Basket::class, 'user_id');
+        return $this->hasOne(Basket::class, 'user_id');
     }
 }
