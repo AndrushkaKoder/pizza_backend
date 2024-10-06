@@ -29,9 +29,12 @@ class Product extends Model
 
     public function scopeIsActive(Builder $query): Builder
     {
-        return $query
-            ->where('active', true)
-            ->where('price', '>', 0);
+        return $query->where('active', true);
+    }
+
+    public function scopeHasPrice(Builder $query): Builder
+    {
+        return $query->where('price', '>', 0);
     }
 
     public function getImages(): array
@@ -39,9 +42,18 @@ class Product extends Model
         return $this->attachments()->get()->map(fn($image) => $image->url())->toArray();
     }
 
-    public function price(): string
+    public function priceInteger(): int
     {
-        $price = intval($this->price);
-        return "{$price} ₽";
+        return intval($this->price);
+    }
+
+    public function active(): bool
+    {
+        return $this->active;
+    }
+
+    public function frontendPrice(int $price = null): string
+    {
+        return ($price ?? $this->priceInteger()) . ' ₽';
     }
 }

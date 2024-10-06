@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\User;
 
-use App\Http\Resources\Baskets\BasketResource;
-use App\Http\Resources\Orders\OrderResource;
+use App\Http\Resources\Cart\CartResource;
+use App\Http\Resources\Order\OrderResource;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
@@ -25,13 +25,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'address' => $this->address,
-            'basket' => new BasketResource($this->basket),
-            'orders' => OrderResource::collection(
-                $this->orders()
-                    ->with(['user', 'status'])
-                    ->get()
-            )
+            'address' => $this->address
         ];
     }
 }

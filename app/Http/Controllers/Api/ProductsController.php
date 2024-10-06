@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProductsResource;
+use App\Http\Resources\Product\ProductsResource;
 use App\Http\Services\ProductsService;
 use Illuminate\Http\Resources\Json\JsonResource;
 

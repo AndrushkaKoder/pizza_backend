@@ -16,4 +16,9 @@ class ProductType extends Model
     public const T_PIZZA = 1;
     public const T_DRINK = 2;
     public const T_SNACKS = 3;
+
+    public function canAddMore(int $countProductsInCart): bool
+    {
+        return $countProductsInCart < $this->max_count;
+    }
 }

@@ -12,6 +12,7 @@ class ProductsService
     {
         return Product::query()
             ->isActive()
+            ->hasPrice()
             ->with(['type', 'attachment'])
             ->get();
     }

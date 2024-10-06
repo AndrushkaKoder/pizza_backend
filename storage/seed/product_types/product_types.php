@@ -2,12 +2,15 @@
 
 return [
     [
-        'title' => 'Пицца'
+        'title' => 'Пицца',
+        'max_count' => 10
     ],
     [
-        'title' => 'Напитки'
+        'title' => 'Напитки',
+        'max_count' => 20
     ],
     [
-        'title' => 'Закуски'
+        'title' => 'Закуски',
+        'max_count' => 5
     ]
 ];

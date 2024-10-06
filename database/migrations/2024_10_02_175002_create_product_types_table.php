@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->boolean('active')->default(true);
+            $table->integer('max_count');
             $table->timestamps();
         });
     }

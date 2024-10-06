@@ -13,7 +13,7 @@ class StatusSeeder extends Seeder
         if (app()->isProduction()) return;
 
         if (!Status::query()->count()) {
-            $data = include_once storage_path('statuses/statuses.php');
+            $data = include_once storage_path('seed/statuses/statuses.php');
             foreach ($data as $status) {
                 Status::query()->create($status);
             }
