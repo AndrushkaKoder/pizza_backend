@@ -4,6 +4,7 @@
     <li>Laravel 10</li>
     <li>postgreSQL</li>
     <li>Sail</li>
+    <li>Redis</li>
 </ul>
 
 <p>Для запуска проекта использовать Makefile с командой 'make up'</p>
