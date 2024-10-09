@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Product\ProductsResource;
 use App\Http\Services\ProductsService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductsController extends Controller
@@ -13,8 +14,8 @@ class ProductsController extends Controller
     {
     }
 
-    public function index(): JsonResource
+    public function index(Request $request): JsonResource
     {
-        return ProductsResource::collection($this->productsService->getAllProducts());
+        return ProductsResource::collection($this->productsService->getAllProducts($request));
     }
 }

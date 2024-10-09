@@ -14,7 +14,8 @@ class Cart extends Model
 
     protected $fillable = [
         'user_id',
-        'products_count'
+        'products_count',
+        'total_sum'
     ];
 
     public function user(): BelongsTo
@@ -35,5 +36,19 @@ class Cart extends Model
             'cart_id',
             'product_id'
         );
+    }
+
+    public function increaseTotalSum(int $price): void
+    {
+        $this->update([
+            'total_sum' => $this->total_sum + $price
+        ]);
+    }
+
+    public function decreaseTotalSum(int $price): void
+    {
+        $this->update([
+            'total_sum' => $this->total_sum > 0 ? $this->total_sum - $price : 0
+        ]);
     }
 }

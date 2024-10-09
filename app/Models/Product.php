@@ -22,6 +22,9 @@ class Product extends Model
         'active',
     ];
 
+    public const CACHE_NAME = 'products';
+    public const CACHE_TTL = 60 * 60 * 24;
+
     public function type(): BelongsTo
     {
         return $this->belongsTo(ProductType::class, 'type_id');
@@ -35,6 +38,11 @@ class Product extends Model
     public function scopeHasPrice(Builder $query): Builder
     {
         return $query->where('price', '>', 0);
+    }
+
+    public function scopeOrderDesc(Builder $query): Builder
+    {
+        return $query->orderByDesc('created_at');
     }
 
     public function getImages(): array

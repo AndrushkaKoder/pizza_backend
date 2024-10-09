@@ -14,12 +14,13 @@ class ProductsInCartResource extends JsonResource
         /*** @var CartItems $this */
 
         return [
+            'id' => $this->id,
             'quantity' => $this->quantity,
             'total_product_price' => $this->price,
             'title' => $this->product->title,
             'description' => $this->product->desription,
             'weight' => $this->product->weight,
-            'price' => intval($this->product->price),
+            'price' => $this->product->frontendPrice(),
             'type' => $this->product->type->title,
             'images' => $this->product->getImages()
         ];

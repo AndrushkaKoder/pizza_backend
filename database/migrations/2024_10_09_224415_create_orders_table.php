@@ -15,10 +15,16 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('payment_id');
             $table->dateTime('delivery_time');
+            $table->integer('total_sum');
             $table->string('address');
             $table->boolean('closed')->default(false);
             $table->timestamps();
+
+            $table->foreign('payment_id')
+                ->on('payments')
+                ->references('id');
 
             $table->foreign('user_id')
                 ->on('users')

@@ -14,6 +14,8 @@ class Status extends Model
         'title'
     ];
 
+    public const JUST_CREATED = 1;
+
     public function order(): HasMany
     {
         return $this->hasMany(Order::class, 'status_id');

@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Auth;
 class CartService
 {
 
+    /**
+     * @param Product $product
+     * @return JsonResponse
+     * Добавление товара в корзину
+     */
     public function addProductToCart(Product $product): JsonResponse
     {
         if (!$product->priceInteger() || !$product->active()) {
@@ -51,36 +56,53 @@ class CartService
             ]);
         }
 
+        $cart->increaseTotalSum($product->price);
+
         return response()->json([
             'success' => true,
             'message' => 'add success'
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     * Получение корзины
+     */
     public function getCart(): JsonResponse
     {
         /**@var User $user */
 
         $user = Auth::user();
-        $cartItems = $user->cart->items;
+        $cartItems = $user->cart?->items;
+
+        if (!$cartItems) return response()->json([
+            'message' => 'cart empty',
+        ]);
 
         $total = [
-            'total_price' => 0,
+            'total_price' => $user->cart->total_sum,
             'quantity' => $cartItems->count()
         ];
         foreach ($cartItems as $item) {
-            $total['total_price'] += intval($item->price);
             $total['products'][] = new ProductsInCartResource($item);
         }
 
-        return response()->json($total);
+        return response()->json($total['total_price'] > 0 ? $total : ['message' => 'cart empty']);
     }
 
+    /**
+     * @param CartItems $cartItem
+     * @return JsonResponse
+     * Декремент товара в корзине
+     */
     public function decrementExistsProduct(CartItems $cartItem): JsonResponse
     {
         $cartItem->update([
-            'quantity' => $cartItem->quantity - 1
+            'quantity' => $cartItem->quantity - 1,
+            'price' => $cartItem->price - $cartItem->product->price
         ]);
+
+        Auth::user()->cart->decreaseTotalSum($cartItem->product->price);
 
         if (!$cartItem->quantity) $cartItem->delete();
 
@@ -90,8 +112,14 @@ class CartService
         ]);
     }
 
+    /**
+     * @param CartItems $cartItem
+     * @return JsonResponse
+     * Удаление товара из корзины
+     */
     public function deleteProductFromCart(CartItems $cartItem): JsonResponse
     {
+        Auth::user()->cart->decreaseTotalSum($cartItem->product->price);
         $cartItem->delete();
 
         return response()->json([
