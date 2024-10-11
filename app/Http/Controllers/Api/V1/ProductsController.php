@@ -16,6 +16,11 @@ class ProductsController extends Controller
 
     public function index(Request $request): JsonResource
     {
-        return ProductsResource::collection($this->productsService->getAllProducts($request));
+        return $this->productsService->getProducts($request);
+    }
+
+    public function show(int $id): ProductsResource
+    {
+        return $this->productsService->getProduct($id);
     }
 }

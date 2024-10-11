@@ -2,18 +2,18 @@
 
 namespace App\Http\Services;
 
+use App\Http\Resources\Product\ProductsResource;
 use App\Models\Product;
 use App\Models\ProductType;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Cache;
 
 class ProductsService
 {
 
-    public function getAllProducts(Request $request): Collection
+    public function getProducts(Request $request): AnonymousResourceCollection
     {
-        Cache::delete(Product::CACHE_NAME);
         $products = Cache::remember(Product::CACHE_NAME, Product::CACHE_TTL, function () {
             return Product::query()
                 ->isActive()
@@ -36,7 +36,24 @@ class ProductsService
             }
         }
 
-        return $products;
+        return ProductsResource::collection($products);
+    }
+
+    public function getProduct(int $id): ProductsResource
+    {
+        if (Cache::has("product:{$id}")) {
+            return new ProductsResource(Cache::get("product:{$id}"));
+        }
+
+        $product = Product::query()
+            ->isActive()
+            ->hasPrice()
+            ->whereHas('attachments')
+            ->findOrFail($id);
+
+        Cache::set("product:{$id}", $product);
+
+        return new ProductsResource($product);
     }
 
     private function filterParams($param): bool
@@ -49,5 +66,4 @@ class ProductsService
             ProductType::T_SNACKS
         ]);
     }
-
 }
