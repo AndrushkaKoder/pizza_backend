@@ -3,14 +3,14 @@
 return [
     [
         'title' => 'Пицца',
-        'max_count' => 10
+        'max_for_order' => 10
     ],
     [
         'title' => 'Напитки',
-        'max_count' => 20
+        'max_for_order' => 20
     ],
     [
         'title' => 'Закуски',
-        'max_count' => 5
+        'max_for_order' => 5
     ]
 ];

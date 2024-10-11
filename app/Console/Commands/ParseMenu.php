@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\ProductType;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -45,7 +44,7 @@ class ParseMenu extends Command
                 'weight' => $item['Product']['Options']['тонкое'][0]['Weight'] ?? $item['Product']['Options']['стандартное'][0]['Weight'] ?? 0,
                 'price' => $item['Product']['Options']['тонкое'][0]['Price'] ?? $item['Product']['Options']['стандартное'][0]['Price'] ?? 0,
                 'img' => $item['Product']['NormalImage']['Path'] ? 'https://pepperspizza.ru' . $item['Product']['NormalImage']['Path'] : '',
-                'type_id' => ProductType::T_PIZZA
+                'category' => 'Пицца'
             ];
         }, $data['answer']['Items']);
 
@@ -62,7 +61,7 @@ class ParseMenu extends Command
                 'weight' => 0,
                 'price' => $item['Product']['Price'] ?? 0,
                 'img' => $item['Product']['NormalImage']['Path'] ? 'https://pepperspizza.ru' . $item['Product']['NormalImage']['Path'] : '',
-                'type_id' => ProductType::T_DRINK
+                'category' => 'Напитки'
             ];
         }, $data['answer']['Items']);
 
@@ -73,6 +72,6 @@ class ParseMenu extends Command
         $dir = storage_path('seed/products');
         if (!is_dir($dir)) mkdir($dir, '775', true);
 
-        file_put_contents($dir . '/products.php', '<?php return ' . var_export($data, true) . ';', FILE_APPEND);
+        file_put_contents($dir . '/products.php', '<?php return ' . var_export($data, true) . ';');
     }
 }

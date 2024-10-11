@@ -23,7 +23,7 @@ class ProductsResource extends JsonResource
             'description' => $this->description,
             'weight' => $this->weight,
             'price' => $this->frontendPrice(),
-            'type' => $this->type->title,
+            'categories' => $this->categories->pluck('title'),
             'images' => $this->getImages()
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
@@ -24,14 +25,20 @@ class ProductSeeder extends Seeder
                     'description' => $productItem['description'],
                     'weight' => $productItem['weight'],
                     'price' => $productItem['price'],
-                    'type_id' => $productItem['type_id']
                 ])->save();
+
+                $category = Category::query()->whereTitle($productItem['category'])->first();
+                if ($category) {
+                    $category->products()->attach($product);
+                }
 
                 if ($photo = $productItem['img']) {
                     $this->attachFromUrl($product, $photo);
                 }
             }
         }
+
+        Storage::deleteDirectory(storage_path('temp'));
     }
 
     private function attachFromUrl(Product $product, string $path): void
@@ -44,7 +51,5 @@ class ProductSeeder extends Seeder
         $orchidFile = new File($file, 'public', 'product');
         $attachment = $orchidFile->load();
         $product->attachments()->syncWithoutDetaching($attachment);
-
-        Storage::delete($pathToSave . '/' . basename($path));
     }
 }

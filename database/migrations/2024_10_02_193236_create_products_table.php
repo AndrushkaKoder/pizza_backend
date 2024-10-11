@@ -17,14 +17,8 @@ return new class extends Migration {
             $table->decimal('price', 6);
             $table->integer('weight');
             $table->boolean('active')->default(true);
-            $table->unsignedBigInteger('type_id');
             $table->softDeletes();
             $table->timestamps();
-
-            $table->foreign('type_id')
-                ->on('product_types')
-                ->references('id')
-                ->noActionOnDelete();
         });
     }
 
