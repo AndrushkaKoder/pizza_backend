@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
+use Orchid\Attachment\Attachable;
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
 use Orchid\Filters\Types\WhereDateStartEnd;
@@ -15,6 +16,7 @@ class User extends Authenticatable
 {
 
     use HasApiTokens;
+    use Attachable;
 
     protected $fillable = [
         'name',
@@ -64,5 +66,10 @@ class User extends Authenticatable
     public function cart(): HasOne
     {
         return $this->hasOne(Cart::class, 'user_id');
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->attachments()->first()?->url();
     }
 }

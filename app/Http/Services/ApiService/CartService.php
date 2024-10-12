@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Http\Services\ApiService;
 
 use App\Http\Resources\Product\ProductsInCartResource;
 use App\Models\Cart;
@@ -38,11 +38,13 @@ class CartService
 
         if ($existsProduct = $cart->items->where('product_id', $product->id)->first()) {
 
-            if (!$existsProduct->product->type->canAddMore($existsProduct->quantity)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "You can`t add more products of current type. Max quantity is {$existsProduct->product->type->max_count}"
-                ], 400);
+            foreach ($existsProduct->product->categories as $category) {
+                if (!$category->canAddMore($existsProduct->quantity)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "You can`t add more products of {$category->title}. Max quantity is {$category->max_for_order}"
+                    ], 400);
+                }
             }
 
             $existsProduct->update([
@@ -74,6 +76,7 @@ class CartService
 
         $user = Auth::user();
         $cartItems = $user->cart?->items;
+
 
         if (!$cartItems) return response()->json([
             'message' => 'cart empty',

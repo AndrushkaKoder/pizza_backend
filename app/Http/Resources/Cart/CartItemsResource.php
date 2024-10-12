@@ -13,7 +13,7 @@ class CartItemsResource extends JsonResource
     {
         return [
             'quantity' => $this->quantity,
-            'product' => new ProductsResource($this->product)
+            'products' => new ProductsResource($this->product)
         ];
     }
 }

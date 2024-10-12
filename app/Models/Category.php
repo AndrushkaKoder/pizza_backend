@@ -50,4 +50,9 @@ class Category extends Model
     {
         return $this->attachments()->get()->map(fn($image) => $image->url())->toArray();
     }
+
+    public function canAddMore(int $productQuantity): bool
+    {
+        return $this->max_for_order > $productQuantity;
+    }
 }

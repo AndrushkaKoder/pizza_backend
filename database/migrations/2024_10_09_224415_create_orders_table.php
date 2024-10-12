@@ -19,6 +19,8 @@ return new class extends Migration
             $table->dateTime('delivery_time');
             $table->integer('total_sum');
             $table->string('address');
+            $table->string('phone');
+            $table->string('comment')->nullable();
             $table->boolean('closed')->default(false);
             $table->timestamps();
 

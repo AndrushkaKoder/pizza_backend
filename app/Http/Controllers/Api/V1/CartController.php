@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\CartService;
+use App\Http\Services\ApiService\CartService;
 use App\Models\CartItems;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;

@@ -18,7 +18,8 @@ class CreateOrder extends FormRequest
             'phone' => ['required', 'string', 'min:10'],
             'address' => ['required', 'string'],
             'delivery_time' => ['required', 'string'],
-            'payment_id' => ['required', 'integer']
+            'payment_id' => ['required', 'integer'],
+            'comment' => ['string']
         ];
     }
 }
