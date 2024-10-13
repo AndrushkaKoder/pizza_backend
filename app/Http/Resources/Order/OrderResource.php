@@ -25,7 +25,8 @@ class OrderResource extends JsonResource
             'delivery_time' => $this->delivery_time,
             'status' => $this->status->title,
             'payment' => $this->payment->title,
-            'items' => ProductsInOrder::collection($this->items)
+            'closed' => $this->closed,
+            'products' => ProductsInOrder::collection($this->items)
         ];
     }
 }

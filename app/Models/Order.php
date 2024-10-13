@@ -19,12 +19,16 @@ class Order extends Model
         'closed',
         'payment_id',
         'total_sum',
-        'phone'
+        'phone',
+        'comment'
     ];
+
+    public const CACHE_NAME = 'orders';
+    public const CACHE_TIME = 60 * 60 * 20;
 
     public function items(): HasMany
     {
-        return $this->hasMany(OrderItems::class, 'product_id');
+        return $this->hasMany(OrderItems::class, 'order_id');
     }
 
     public function status(): BelongsTo

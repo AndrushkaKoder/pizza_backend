@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Services\ApiService;
 
 use App\Http\Resources\Product\ProductsInCartResource;
@@ -58,7 +60,7 @@ class CartService
             ]);
         }
 
-        $cart->increaseTotalSum($product->price);
+        $cart->increaseTotalSum(intval($product->price));
 
         return response()->json([
             'success' => true,
@@ -72,25 +74,28 @@ class CartService
      */
     public function getCart(): JsonResponse
     {
-        /**@var User $user */
-
         $user = Auth::user();
-        $cartItems = $user->cart?->items;
 
+        /**
+         * @var User $user ;
+         */
+
+        $cartItems = $user->cart?->items;
 
         if (!$cartItems) return response()->json([
             'message' => 'cart empty',
         ]);
 
         $total = [
-            'total_price' => $user->cart->total_sum,
-            'quantity' => $cartItems->count()
+            'data' => [
+                'total_price' => $user->cart->total_sum,
+                'quantity' => $cartItems->count()
+            ]
         ];
-        foreach ($cartItems as $item) {
-            $total['products'][] = new ProductsInCartResource($item);
-        }
 
-        return response()->json($total['total_price'] > 0 ? $total : ['message' => 'cart empty']);
+        $total['data']['products'] = ProductsInCartResource::collection($cartItems);
+
+        return response()->json($total['data']['total_price'] > 0 ? $total : ['message' => 'cart empty']);
     }
 
     /**
@@ -105,7 +110,7 @@ class CartService
             'price' => $cartItem->price - $cartItem->product->price
         ]);
 
-        Auth::user()->cart->decreaseTotalSum($cartItem->product->price);
+        Auth::user()->cart->decreaseTotalSum(intval($cartItem->product->price));
 
         if (!$cartItem->quantity) $cartItem->delete();
 

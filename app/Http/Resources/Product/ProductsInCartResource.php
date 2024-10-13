@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Product;
 
 use App\Models\CartItems;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,10 +20,8 @@ class ProductsInCartResource extends JsonResource
             'title' => $this->product->title,
             'description' => $this->product->desription,
             'weight' => $this->product->weight,
-            'price' => $this->product->frontendPrice(),
-            'categories' => $this->product()->get()->map(function (Product $product) {
-                return $product->categories->pluck('title');
-            }),
+            'price' => $this->product->priceInteger(),
+            'categories' => $this->product->categories->pluck('title'),
             'images' => $this->product->getImages()
         ];
     }
