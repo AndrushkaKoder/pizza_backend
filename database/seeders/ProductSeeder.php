@@ -14,8 +14,6 @@ class ProductSeeder extends Seeder
 
     public function run(): void
     {
-        if (app()->isProduction()) return;
-
         if (!Product::query()->count()) {
             $data = include_once storage_path('seed/products/products.php');
             foreach ($data as $productItem) {

@@ -101,4 +101,9 @@ Route::screen('/examples/grid', ExampleGridScreen::class)->name('platform.exampl
 Route::screen('/examples/charts', ExampleChartsScreen::class)->name('platform.example.charts');
 Route::screen('/examples/cards', ExampleCardsScreen::class)->name('platform.example.cards');
 
+Route::screen('/orders', \App\Orchid\Screens\Order\OrderListScreen::class)->name('platform.orders');
+Route::screen('/orders/{order}', \App\Orchid\Screens\Order\OrderEditScreen::class)->name('platform.orders.edit');
+
+
+
 //Route::screen('idea', Idea::class, 'platform.screens.idea');

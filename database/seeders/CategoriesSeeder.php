@@ -10,8 +10,6 @@ class CategoriesSeeder extends Seeder
 
     public function run(): void
     {
-        if (app()->isProduction()) return;
-
         if (!Category::query()->count()) {
             $data = include_once storage_path('seed/categories/categories.php');
             foreach ($data as $category) {
