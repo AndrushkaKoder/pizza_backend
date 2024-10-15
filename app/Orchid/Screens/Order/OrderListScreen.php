@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Order;
 
 use App\Models\Order;
 use App\Orchid\Layouts\Order\OrderListLayout;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 
 class OrderListScreen extends Screen
@@ -20,7 +21,9 @@ class OrderListScreen extends Screen
 
     public function commandBar(): array
     {
-        return [];
+        return [
+            Link::make('Назад')->route('platform.index')
+        ];
     }
 
     public function name(): string
