@@ -11,9 +11,17 @@ use App\Orchid\Screens\Examples\ExampleGridScreen;
 use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\Order\OrderEditScreen;
+use App\Orchid\Screens\Order\OrderListScreen;
+use App\Orchid\Screens\Payment\PaymentEditScreen;
+use App\Orchid\Screens\Payment\PaymentListScreen;
 use App\Orchid\Screens\PlatformScreen;
+use App\Orchid\Screens\Product\ProductEditScreen;
+use App\Orchid\Screens\Product\ProductListScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
+use App\Orchid\Screens\Status\StatusEditScreen;
+use App\Orchid\Screens\Status\StatusListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
@@ -101,9 +109,17 @@ Route::screen('/examples/grid', ExampleGridScreen::class)->name('platform.exampl
 Route::screen('/examples/charts', ExampleChartsScreen::class)->name('platform.example.charts');
 Route::screen('/examples/cards', ExampleCardsScreen::class)->name('platform.example.cards');
 
-Route::screen('/orders', \App\Orchid\Screens\Order\OrderListScreen::class)->name('platform.orders');
-Route::screen('/orders/{order}', \App\Orchid\Screens\Order\OrderEditScreen::class)->name('platform.orders.edit');
+Route::screen('/orders', OrderListScreen::class)->name('platform.orders');
+Route::screen('/orders/{order}', OrderEditScreen::class)->name('platform.orders.edit');
 
+Route::screen('/products', ProductListScreen::class)->name('platform.products.list');
+Route::screen('/product/{product?}', ProductEditScreen::class)->name('platform.products.edit');
+
+Route::screen('/payments', PaymentListScreen::class)->name('platform.payments.list');
+Route::screen('/payment/{payment?}', PaymentEditScreen::class)->name('platform.payments.edit');
+
+Route::screen('/statuses', StatusListScreen::class)->name('platform.statuses.list');
+Route::screen('/status/{status?}', StatusEditScreen::class)->name('platform.statuses.edit');
 
 
 //Route::screen('idea', Idea::class, 'platform.screens.idea');

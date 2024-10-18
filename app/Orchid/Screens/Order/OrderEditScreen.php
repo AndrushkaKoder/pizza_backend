@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\CheckBox;
+use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Fields\TextArea;
@@ -29,6 +30,11 @@ class OrderEditScreen extends Screen
         ];
     }
 
+    public function name(): string
+    {
+        return "Редактирование заказа № {$this->order->id}";
+    }
+
     public function commandBar(): array
     {
         return [
@@ -40,6 +46,25 @@ class OrderEditScreen extends Screen
     {
         return [
             Layout::rows([
+
+                Group::make([
+                    Select::make('status')
+                        ->title('Статус')
+                        ->fromModel(Status::class, 'title')
+                        ->required()
+                        ->value($this->order->status),
+
+                    Select::make('payment')
+                        ->title('Тип оплаты')
+                        ->fromModel(Payment::class, 'title')
+                        ->required()
+                        ->value($this->order->payment->id),
+
+                    CheckBox::make('closed')
+                        ->value($this->order->closed)
+                        ->title('Закрыть заказ'),
+                ]),
+
                 Input::make('user')
                     ->type('text')
                     ->title('Кто заказал')
@@ -53,23 +78,7 @@ class OrderEditScreen extends Screen
                 TextArea::make('comment')
                     ->rows(5)
                     ->title('Комментарий')
-                   ->value($this->order->comment)->hr(),
-
-                Select::make('status')
-                    ->title('Статус')
-                    ->fromModel(Status::class, 'title')
-                    ->required()
-                    ->value($this->order->status),
-
-                Select::make('payment')
-                    ->title('Тип оплаты')
-                    ->fromModel(Payment::class, 'title')
-                    ->required()
-                    ->value($this->order->payment->id),
-
-                CheckBox::make('closed')
-                    ->value($this->order->closed)
-                    ->title('Закрыть заказ'),
+                   ->value($this->order->comment),
 
                 Button::make('Сохранить')->method('save')
             ])

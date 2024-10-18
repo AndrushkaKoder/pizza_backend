@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Orchid\Attachment\Attachable;
+use Orchid\Filters\Filterable;
+use Orchid\Screen\AsSource;
 
 class Product extends Model
 {
     use HasFactory;
     use Attachable;
+    use AsSource;
+    use Filterable;
 
     protected $fillable = [
         'title',
@@ -20,6 +24,11 @@ class Product extends Model
         'price',
         'type_id',
         'active',
+    ];
+
+    protected $allowedSorts = [
+        'id',
+        'price'
     ];
 
     public const CACHE_NAME = 'products';
@@ -65,9 +74,9 @@ class Product extends Model
         return intval($this->price);
     }
 
-    public function active(): bool
+    public function isActive(): bool
     {
-        return $this->active;
+        return false;
     }
 
     public function frontendPrice(int $price = null): string

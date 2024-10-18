@@ -34,7 +34,8 @@ class PlatformProvider extends OrchidServiceProvider
         return [
             Menu::make('Товары')
                 ->icon('bs.shop')
-                ->title('Товары'),
+                ->title('Товары')
+                ->route('platform.products.list'),
 
 
             Menu::make('Заказы')
@@ -43,12 +44,11 @@ class PlatformProvider extends OrchidServiceProvider
 
             Menu::make('Платежи')
                 ->icon('bs.currency-dollar')
-                ->route('platform.example.fields')
-                ->active('*/examples/form/*'),
+                ->route('platform.payments.list'),
 
             Menu::make('Статусы')
                 ->icon('bs.clock')
-                ->route('platform.example.layouts'),
+                ->route('platform.statuses.list'),
 
             Menu::make(__('Users'))
                 ->icon('bs.people')
