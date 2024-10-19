@@ -14,8 +14,11 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->string('description')->nullable();
-            $table->decimal('price', 6);
             $table->integer('weight');
+            $table->decimal('price', 6);
+            $table->decimal('discount_price', 6)->nullable()->default(null);
+            $table->date('discount_end')->nullable()->default(null);
+            $table->boolean('discount_active')->default(false);
             $table->boolean('active')->default(true);
             $table->softDeletes();
             $table->timestamps();

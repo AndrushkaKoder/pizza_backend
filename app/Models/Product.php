@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,9 @@ class Product extends Model
         'price',
         'type_id',
         'active',
+        'discount_price',
+        'discount_end',
+        'discount_active'
     ];
 
     protected $allowedSorts = [
@@ -69,9 +73,16 @@ class Product extends Model
         return $this->attachments()->get()->map(fn($image) => $image->url())->toArray();
     }
 
-    public function priceInteger(): int
+    public function getDiscountPrice(): ?int
     {
-        return intval($this->price);
+        if (!$this->discount_price || !$this->discount_active) return null;
+        if ($this->discount_end && Carbon::parse($this->discount_end) < Carbon::now()) return null;
+        return $this->getPrice($this->discount_price);
+    }
+
+    public function getPrice(int $price = null): int
+    {
+        return intval($price ?? $this->price);
     }
 
     public function isActive(): bool

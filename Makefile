@@ -11,7 +11,8 @@ down:
 
 build: #for fast start
 	./vendor/bin/sail up -d
-	./vendor/bin/sail artisan migrate
-	./vendor/bin/sail artisan db:seed
+	./vendor/bin/sail artisan migrate:fresh
 	./vendor/bin/sail artisan app:parse
+	./vendor/bin/sail artisan db:seed
+	./vendor/bin/sail artisan orchid:admin admin admin@admin.com password
 	./vendor/bin/sail artisan optimize:clear

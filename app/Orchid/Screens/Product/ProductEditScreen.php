@@ -4,11 +4,14 @@ namespace App\Orchid\Screens\Product;
 
 use App\Models\Category;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rules\In;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\CheckBox;
+use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Select;
@@ -53,24 +56,38 @@ class ProductEditScreen extends Screen
                         ->title('Название')
                         ->required(),
 
+                    Select::make('product.categories')
+                        ->title('Категория')
+                        ->fromModel(Category::class, 'title')
+                        ->multiple()
+                        ->required(),
+                ]),
+                Group::make([
                     Input::make('product.price')
                         ->type('number')
                         ->title('Цена')
                         ->max(10000)
                         ->required(),
 
+                    Input::make('product.discount_price')
+                        ->title('Цена со скидкой')
+                        ->type('integer')
+                        ->max(10000),
+
+                    DateTimer::make('product.discount_end')
+                        ->title('Окончание скидки')
+                        ->format('Y-m-d')
+                        ->placeholder('Выберите день'),
+
+                    CheckBox::make('product.discount_active')
+                        ->title('Скидка активна'),
+
+                ]),
+                Group::make([
                     Input::make('product.weight')
                         ->type('integer')
                         ->max(10000)
-                        ->title('Вес')
-                ]),
-
-                Group::make([
-                    Select::make('product.categories')
-                        ->title('Категория')
-                        ->fromModel(Category::class, 'title')
-                        ->multiple()
-                        ->required(),
+                        ->title('Вес'),
 
                     CheckBox::make('product.active')
                         ->title('Активность')
@@ -131,10 +148,14 @@ class ProductEditScreen extends Screen
     {
         $data = $request->input('product');
 
-        if (!empty($data['active'])) {
-            $data['active'] = true;
-        } else {
-            $data['active'] = false;
+        $data['active'] = boolval($request->input('product.active'));
+        $data['discount_active'] = boolval($request->input('product.discount_active'));
+
+        if ($discountDate = $data['discount_end']) {
+            if (Carbon::parse($discountDate) < Carbon::now()) {
+                $data['discount_end'] = null;
+                $data['discount_active'] = false;
+            }
         }
 
         return $data;

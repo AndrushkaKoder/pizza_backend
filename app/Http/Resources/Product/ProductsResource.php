@@ -18,11 +18,18 @@ class ProductsResource extends JsonResource
     {
         /*** @var Product $this */
 
+        $discountPrice = $this->getDiscountPrice();
+        $discount = !$discountPrice ? null : [
+            'price' => $discountPrice,
+            'date' => $this->discount_end
+        ];
+
         return [
             'title' => $this->title,
             'description' => $this->description,
             'weight' => $this->weight,
-            'price' => $this->frontendPrice(),
+            'price' => $this->getPrice(),
+            'discount' => $discount,
             'categories' => $this->categories->pluck('title'),
             'images' => $this->getImages()
         ];
