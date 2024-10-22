@@ -19,7 +19,7 @@ class ProductSeeder extends Seeder
             foreach ($data as $productItem) {
                 $product = new Product();
                 $product->fill([
-                    'title' => $productItem['title'],
+                    'title' => env('APP_ENV') === 'local' ? $productItem['title'] : 'TEST_' . $productItem['title'],
                     'description' => $productItem['description'],
                     'weight' => $productItem['weight'],
                     'price' => $productItem['price'],
@@ -49,5 +49,6 @@ class ProductSeeder extends Seeder
         $orchidFile = new File($file, 'public', 'product');
         $attachment = $orchidFile->load();
         $product->attachments()->syncWithoutDetaching($attachment);
+        Storage::delete($attachment->physicalPath());
     }
 }

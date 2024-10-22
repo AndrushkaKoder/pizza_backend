@@ -16,3 +16,6 @@ build: #for fast start
 	./vendor/bin/sail artisan db:seed
 	./vendor/bin/sail artisan orchid:admin admin admin@admin.com password
 	./vendor/bin/sail artisan optimize:clear
+
+test:
+	./vendor/bin/sail artisan test

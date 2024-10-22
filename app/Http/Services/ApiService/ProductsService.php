@@ -48,7 +48,7 @@ class ProductsService
         $product = Product::query()
             ->isActive()
             ->hasPrice()
-            ->hasImages()
+//            ->hasImages()
             ->with('attachments')
             ->findOrFail($id);
 
