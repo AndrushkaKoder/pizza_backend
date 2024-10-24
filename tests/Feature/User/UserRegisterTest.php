@@ -7,7 +7,6 @@ use Tests\TestCase;
 
 class UserRegisterTest extends TestCase
 {
-
     private array $userData = [];
 
     protected function setUp(): void
@@ -32,5 +31,7 @@ class UserRegisterTest extends TestCase
             "message"
         ]);
     }
+
+
 
 }

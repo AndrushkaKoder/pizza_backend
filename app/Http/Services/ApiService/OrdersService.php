@@ -27,10 +27,10 @@ class OrdersService
      */
     public function getOrders(): ResourceCollection
     {
-//        return Cache::remember(Order::CACHE_NAME, Order::CACHE_TIME, function () {
-        $user = Auth::user();
-        return OrderResource::collection($user->orders);
-//        });
+        return Cache::remember(Order::CACHE_NAME, Order::CACHE_TIME, function () {
+            $user = Auth::user();
+            return OrderResource::collection($user->orders);
+        });
     }
 
     /**
@@ -59,9 +59,8 @@ class OrdersService
 
         if ($user?->cart) {
             $created = DB::transaction(function () use ($request, $user) {
-                $order = new Order();
                 try {
-                    $order->fill([
+                    $order = $user->orders()->create([
                         'user_id' => Auth::id(),
                         'status_id' => Status::JUST_CREATED,
                         'payment_id' => $request->validated('payment_id'),
@@ -72,33 +71,32 @@ class OrdersService
                         'closed' => false,
                         'total_sum' => $user->cart->items->sum('price'),
                     ]);
-                    $order->save();
 
                     $cartItems = $user?->cart?->items->toArray();
-
                     if (!$cartItems) return false;
-
                     $order->items()->createMany($cartItems);
 
                     $this->setDefaultDataForUser($user, 'phone', $request->validated('phone'));
                     $this->setDefaultDataForUser($user, 'default_address', $request->validated('address'));
 
                     $user->cart()->delete();
-                    Cache::delete('orders');
+                    Cache::delete(Order::CACHE_NAME);
 
-                    return true;
+                    return [
+                        'success' => true,
+                        'message' => 'order success created'
+                    ];
 
                 } catch (\Exception $exception) {
-                    return false;
+                    return [
+                        'success' => false,
+                        'message' => $exception->getMessage()
+                    ];
                 }
-
             });
         }
 
-        return response()->json([
-            'success' => $created,
-            'message' => $created ? 'success created' : 'has not been created'
-        ], $created ? 201 : 400);
+        return response()->json($created, $created['success'] ? 201 : 400);
 
     }
 

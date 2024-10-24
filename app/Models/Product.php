@@ -87,7 +87,7 @@ class Product extends Model
 
     public function isActive(): bool
     {
-        return false;
+        return $this->active;
     }
 
     public function frontendPrice(int $price = null): string

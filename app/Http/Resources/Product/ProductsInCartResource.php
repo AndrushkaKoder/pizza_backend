@@ -20,7 +20,7 @@ class ProductsInCartResource extends JsonResource
             'title' => $this->product->title,
             'description' => $this->product->desription,
             'weight' => $this->product->weight,
-            'price' => $this->product->priceInteger(),
+            'price' => $this->product->getPrice(),
             'categories' => $this->product->categories->pluck('title'),
             'images' => $this->product->getImages()
         ];

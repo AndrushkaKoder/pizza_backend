@@ -22,7 +22,7 @@ class CartService
      */
     public function addProductToCart(Product $product): JsonResponse
     {
-        if (!$product->priceInteger() || !$product->active()) {
+        if (!$product->getPrice() || !$product->isActive()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Product not allowed'
@@ -51,12 +51,12 @@ class CartService
 
             $existsProduct->update([
                 'quantity' => $existsProduct->quantity + 1,
-                'price' => $existsProduct->price + $product->priceInteger()
+                'price' => $existsProduct->price + $product->getPrice()
             ]);
         } else {
             $cart->items()->create([
                 'product_id' => $product->id,
-                'price' => $product->priceInteger()
+                'price' => $product->getPrice()
             ]);
         }
 
@@ -75,27 +75,24 @@ class CartService
     public function getCart(): JsonResponse
     {
         $user = Auth::user();
-
         /**
          * @var User $user ;
          */
 
         $cartItems = $user->cart?->items;
 
-        if (!$cartItems) return response()->json([
-            'message' => 'cart empty',
-        ]);
+        if (!$cartItems) return response()->json();
 
         $total = [
             'data' => [
                 'total_price' => $user->cart->total_sum,
-                'quantity' => $cartItems->count()
+                'quantity' => $cartItems->sum('quantity')
             ]
         ];
 
         $total['data']['products'] = ProductsInCartResource::collection($cartItems);
 
-        return response()->json($total['data']['total_price'] > 0 ? $total : ['message' => 'cart empty']);
+        return response()->json($total['data']['total_price'] > 0 ? $total : []);
     }
 
     /**

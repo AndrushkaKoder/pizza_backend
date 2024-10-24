@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +15,7 @@ use Orchid\Platform\Models\User as Authenticatable;
 
 class User extends Authenticatable
 {
-
+    use HasFactory;
     use HasApiTokens;
     use Attachable;
 

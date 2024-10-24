@@ -12,6 +12,7 @@ class ProductFactory extends Factory
         return [
             'title' => 'test',
             'weight' => 0,
+            'price' => 100.00
         ];
     }
 }

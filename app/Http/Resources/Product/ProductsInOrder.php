@@ -19,7 +19,7 @@ class ProductsInOrder extends JsonResource
             'id' => $this->id,
             'quantity' => $this->quantity,
             'title' => $this->product->title,
-            'price' => $this->product->frontendPrice(),
+            'price' => $this->product->getPrice(),
             'images' => $this->product->getImages()
         ];
     }
