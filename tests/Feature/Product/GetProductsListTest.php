@@ -12,9 +12,12 @@ class GetProductsListTest extends TestCase
         parent::setUp();
     }
 
-    public function test_example(): void
+    public function test_products_list_get(): void
     {
         $response = $this->get(route('products.index'));
         $response->assertOk();
+        $response->assertJsonStructure([
+            'data' => []
+        ]);
     }
 }

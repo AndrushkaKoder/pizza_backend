@@ -30,7 +30,7 @@ class CartTest extends TestCase
 
     public function test_that_cart_created(): void
     {
-        $response = $this->post(route('cart.store', [
+        $response = $this->post(route('cart.create', [
             'product' => $this->product->id
         ]));
 

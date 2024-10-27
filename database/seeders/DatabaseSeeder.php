@@ -11,10 +11,11 @@ class DatabaseSeeder extends Seeder
     {
         if (app()->isProduction()) return;
 
+        $this->call(RolesSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(CategoriesSeeder::class);
         $this->call(StatusSeeder::class);
-        $this->call(ProductSeeder::class);
         $this->call(PaymentsSeeder::class);
+        $this->call(ProductSeeder::class);
     }
 }

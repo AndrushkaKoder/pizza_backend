@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-#api v1 routes
+#api v1
 Route::prefix('v1')->group(function () {
     include 'v1/user/user.php';
     include 'v1/cart/cart.php';

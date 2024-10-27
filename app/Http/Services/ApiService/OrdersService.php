@@ -23,7 +23,8 @@ class OrdersService
 {
 
     /**
-     * Получить все заказы
+     * @return ResourceCollection
+     *  Получить все заказы
      */
     public function getOrders(): ResourceCollection
     {
@@ -84,7 +85,7 @@ class OrdersService
 
                     return [
                         'success' => true,
-                        'message' => 'order success created'
+                        'message' => 'success'
                     ];
 
                 } catch (\Exception $exception) {

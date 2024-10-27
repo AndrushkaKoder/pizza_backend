@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
+use Orchid\Platform\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -13,13 +13,18 @@ class UserSeeder extends Seeder
     {
         User::factory(10)->create();
 
-        $roles = include_once storage_path('seed/roles/roles.php');
         $admin = User::query()->create([
             'name' => 'admin',
             'email' => 'admin@admin.com',
-            'password' => Hash::make(12345)
+            'password' => 12345,
+            'permissions' => [
+                'platform.index' => 1,
+                'platform.systems.roles' => 1,
+                'platform.systems.users' => 1,
+                'platform.systems.attachment' => 1
+            ]
         ]);
-        $admin->roles()->create($roles['admin']);
+        $admin->roles()->sync(Role::query()->where('slug', 'admin')->first()->id);
     }
 
 }

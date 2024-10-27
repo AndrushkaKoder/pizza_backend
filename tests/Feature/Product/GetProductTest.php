@@ -23,6 +23,10 @@ class GetProductTest extends TestCase
         ]);
     }
 
+    /**
+     * @return void
+     * @test
+     */
     public function test_that_one_product_return(): void
     {
         $response = $this->get(route('products.show', ['id' => $this->product->id]));

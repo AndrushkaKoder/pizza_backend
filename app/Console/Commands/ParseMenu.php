@@ -23,7 +23,7 @@ class ParseMenu extends Command
             if (!$data) throw new \Exception('OOOPS, error');
 
             $this->info('success parsing');
-            $this->saveProductsSeeder($data);
+            $this->saveProductsInFile($data);
 
         } catch (\Throwable $throwable) {
             $this->error('some errors, check ' . self::class);
@@ -47,7 +47,6 @@ class ParseMenu extends Command
                 'category' => 'Пицца'
             ];
         }, $data['answer']['Items']);
-
     }
 
     private function getDrinks(): ?array
@@ -64,12 +63,13 @@ class ParseMenu extends Command
                 'category' => 'Напитки'
             ];
         }, $data['answer']['Items']);
-
     }
 
-    private function saveProductsSeeder(array $data): void
+    private function saveProductsInFile(array $data): void
     {
         $dir = storage_path('seed/products');
+
+        if (file_exists($dir . '/products.php')) return;
         if (!is_dir($dir)) mkdir($dir, '775', true);
 
         file_put_contents($dir . '/products.php', '<?php return ' . var_export($data, true) . ';');
