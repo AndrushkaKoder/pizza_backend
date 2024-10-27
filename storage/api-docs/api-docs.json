@@ -1,0 +1,79 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Pizza api V1",
+        "version": "1"
+    },
+    "paths": {
+        "/api/v1": {},
+        "api/v1/products": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Получение списка продуктов",
+                "operationId": "6f3581dba5e55624ee5704d0b0cfdbcb",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    }
+                }
+            }
+        },
+        "api/v1/product/{id}": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Получение продукта",
+                "operationId": "1c14f39095123f48e7921ef4f55fb012",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "weight": {
+                                            "type": "integer"
+                                        },
+                                        "price": {
+                                            "type": "integer"
+                                        },
+                                        "discount": {
+                                            "type": "integer"
+                                        },
+                                        "categories": {
+                                            "type": "object"
+                                        },
+                                        "images": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Product",
+            "description": "Product"
+        }
+    ]
+}
