@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-trait Helper
+trait InputDataHandlerTrait
 {
     public function normalizePhoneNumber(string $number): string
     {
