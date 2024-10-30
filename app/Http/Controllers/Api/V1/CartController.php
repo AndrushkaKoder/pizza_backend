@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Product\ProductsInCartResource;
 use App\Http\Services\ApiService\CartService;
 use App\Models\CartItems;
-use App\Models\Product;
+use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -15,24 +18,75 @@ class CartController extends Controller
     {
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function index(): JsonResponse
     {
-        return $this->cartService->getCart();
+        $user = Auth::user();
+        /**
+         * @var User|Authenticatable $user
+         */
+
+        $cartItems = $user->cart?->items;
+
+        if (!$cartItems) return response()->json();
+
+        $total = [
+            'data' => [
+                'total_price' => $user->cart->total_sum,
+                'quantity' => $cartItems->sum('quantity')
+            ]
+        ];
+
+        $total['data']['products'] = ProductsInCartResource::collection($cartItems);
+
+        return response()->json($total['data']['total_price'] > 0 ? $total : []);
     }
 
-    public function addToCart(Product $product): JsonResponse
+    public function addToCart(int $productId): JsonResponse
     {
-        return $this->cartService->addProductToCart($product);
+        $result = $this->cartService->addProductToCart($productId);
+
+        return response()->json([
+            'success' => $result['success'],
+            'message' => $result['message']
+        ], $result['status']);
     }
 
+    /**
+     * @param CartItems $cartItem
+     * @return JsonResponse
+     */
     public function decrement(CartItems $cartItem): JsonResponse
     {
-        return $this->cartService->decrementExistsProduct($cartItem);
+        $cartItem->update([
+            'quantity' => $cartItem->quantity - 1,
+            'price' => $cartItem->price - $cartItem->product->price
+        ]);
+
+        Auth::user()->cart->decreaseTotalSum(intval($cartItem->product->price));
+
+        if (!$cartItem->quantity) $cartItem->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'product was decreased'
+        ]);
     }
 
+    /**
+     * @param CartItems $cartItem
+     * @return JsonResponse
+     */
     public function delete(CartItems $cartItem): JsonResponse
     {
-        return $this->cartService->deleteProductFromCart($cartItem);
+       Auth::user()->cart->deleteItem($cartItem);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'product was deleted'
+        ]);
     }
 
 }

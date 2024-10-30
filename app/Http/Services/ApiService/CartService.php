@@ -4,29 +4,28 @@ declare(strict_types=1);
 
 namespace App\Http\Services\ApiService;
 
-use App\Http\Resources\Product\ProductsInCartResource;
 use App\Models\Cart;
-use App\Models\CartItems;
 use App\Models\Product;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class CartService
 {
 
     /**
-     * @param Product $product
-     * @return JsonResponse
+     * @param int $productId
+     * @return array
      * Добавление товара в корзину
      */
-    public function addProductToCart(Product $product): JsonResponse
+    public function addProductToCart(int $productId): array
     {
+        $product = Product::query()->findOrFail($productId);
         if (!$product->getPrice() || !$product->isActive()) {
-            return response()->json([
+            return [
                 'success' => false,
-                'message' => 'Product not allowed'
-            ], 400);
+                'message' => 'Product not allowed',
+                'status' => 400
+            ];
         }
 
         $user = Auth::user();
@@ -42,10 +41,11 @@ class CartService
 
             foreach ($existsProduct->product->categories as $category) {
                 if (!$category->canAddMore($existsProduct->quantity)) {
-                    return response()->json([
+                    return [
                         'success' => false,
-                        'message' => "You can`t add more products of {$category->title}. Max quantity is {$category->max_for_order}"
-                    ], 400);
+                        'message' => "You can`t add more products of {$category->title}. Max quantity is {$category->max_for_order}",
+                        'status' => 400
+                    ];
                 }
             }
 
@@ -62,75 +62,12 @@ class CartService
 
         $cart->increaseTotalSum(intval($product->price));
 
-        return response()->json([
+        return [
             'success' => true,
-            'message' => 'add success'
-        ]);
-    }
-
-    /**
-     * @return JsonResponse
-     * Получение корзины
-     */
-    public function getCart(): JsonResponse
-    {
-        $user = Auth::user();
-        /**
-         * @var User $user ;
-         */
-
-        $cartItems = $user->cart?->items;
-
-        if (!$cartItems) return response()->json();
-
-        $total = [
-            'data' => [
-                'total_price' => $user->cart->total_sum,
-                'quantity' => $cartItems->sum('quantity')
-            ]
+            'message' => 'success',
+            'status' => 200
         ];
-
-        $total['data']['products'] = ProductsInCartResource::collection($cartItems);
-
-        return response()->json($total['data']['total_price'] > 0 ? $total : []);
     }
 
-    /**
-     * @param CartItems $cartItem
-     * @return JsonResponse
-     * Декремент товара в корзине
-     */
-    public function decrementExistsProduct(CartItems $cartItem): JsonResponse
-    {
-        $cartItem->update([
-            'quantity' => $cartItem->quantity - 1,
-            'price' => $cartItem->price - $cartItem->product->price
-        ]);
-
-        Auth::user()->cart->decreaseTotalSum(intval($cartItem->product->price));
-
-        if (!$cartItem->quantity) $cartItem->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'product was deleted'
-        ]);
-    }
-
-    /**
-     * @param CartItems $cartItem
-     * @return JsonResponse
-     * Удаление товара из корзины
-     */
-    public function deleteProductFromCart(CartItems $cartItem): JsonResponse
-    {
-        Auth::user()->cart->decreaseTotalSum($cartItem->product->price);
-        $cartItem->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'product was deleted'
-        ]);
-    }
 
 }

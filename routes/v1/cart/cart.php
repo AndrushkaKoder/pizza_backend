@@ -7,5 +7,5 @@ Route::middleware('auth:sanctum')->controller(CartController::class)->group(func
     Route::get('/cart', 'index')->name('cart.index');
     Route::post('/cart/add/{product}', 'addToCart')->name('cart.create');
     Route::delete('/cart/delete/{cartItem}', 'delete')->name('cart.delete');
-    Route::delete('/cart/{cartItem}/decrement', 'decrement')->name('cart.product.decrement');
+    Route::delete('/cart/decrement/{cartItem}', 'decrement')->name('cart.product.decrement');
 });
