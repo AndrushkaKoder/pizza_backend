@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Product\ProductsInCartResource;
-use App\Http\Services\ApiService\CartService;
+use App\Http\Services\CartService;
 use App\Models\CartItems;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -21,7 +21,7 @@ class CartController extends Controller
     /**
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function getCart(): JsonResponse
     {
         $user = Auth::user();
         /**
@@ -81,7 +81,7 @@ class CartController extends Controller
      */
     public function delete(CartItems $cartItem): JsonResponse
     {
-       Auth::user()->cart->deleteItem($cartItem);
+        Auth::user()->cart->deleteItem($cartItem);
 
         return response()->json([
             'success' => true,

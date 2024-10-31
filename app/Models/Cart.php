@@ -55,6 +55,9 @@ class Cart extends Model
     public function deleteItem(CartItems $item): ?bool
     {
         $this->decreaseTotalSum($item->product->price);
-        return $item->delete();
+        $item->delete();
+        if (!$this->items->count()) $this->delete();
+
+        return true;
     }
 }
