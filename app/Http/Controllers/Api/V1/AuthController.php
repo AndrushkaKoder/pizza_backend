@@ -30,7 +30,7 @@ class AuthController extends Controller
                     'errors' => [
                         'phone' => ['Number already exists']
                     ]
-                ]);
+                ], 400);
             }
         }
 

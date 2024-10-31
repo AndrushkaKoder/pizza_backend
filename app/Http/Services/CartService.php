@@ -4,13 +4,37 @@ declare(strict_types=1);
 
 namespace App\Http\Services;
 
+use App\Http\Resources\Product\ProductsInCartResource;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 
 class CartService
 {
+
+    public function getCart(): array
+    {
+        $user = Auth::user();
+
+        /**@var User|Authenticatable $user */
+
+        $cartItems = $user->cart?->items;
+
+        if (!$cartItems) return [];
+
+        $total = [
+            'data' => [
+                'total_price' => $user->cart->total_sum,
+                'quantity' => $cartItems->sum('quantity')
+            ]
+        ];
+
+        $total['data']['products'] = ProductsInCartResource::collection($cartItems);
+
+        return $total['data']['total_price'] > 0 ? $total : [];
+    }
 
     /**
      * @param int $productId

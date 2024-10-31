@@ -9,15 +9,21 @@ use App\Models\Status;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Models\User;
 use App\Models\Cart;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class OrderTest extends TestCase
 {
 
+    use RefreshDatabase;
+
     private User|Authenticatable $user;
     private Cart $cart;
     private Product $product;
+    private Order $order;
+    private Status $status;
+    private Payment $payment;
 
     protected function setUp(): void
     {
@@ -36,6 +42,10 @@ class OrderTest extends TestCase
             'quantity' => 1,
             'price' => $this->product->getPrice()
         ]);
+
+        $this->order = Order::factory()->create();
+        $this->status = Status::factory()->create();
+        $this->payment = Payment::factory()->create();
     }
 
     /**
@@ -66,8 +76,8 @@ class OrderTest extends TestCase
     public function test_that_order_status_changed(): void
     {
         $response = $this->get(route('order.change_status', [
-            'order' => Order::query()->inRandomOrder()->first(),
-            'statusId' => Status::query()->inRandomOrder()->first()
+            'order' => $this->order->id,
+            'statusId' => $this->status->id
         ]));
 
         $response->assertOk();
@@ -76,8 +86,8 @@ class OrderTest extends TestCase
     public function test_that_payment_type_changed(): void
     {
         $response = $this->get(route('order.change_payment', [
-            'order' => Order::query()->inRandomOrder()->first(),
-            'paymentId' => Payment::query()->inRandomOrder()->first()
+            'order' => $this->order->id,
+            'statusId' => $this->status->id
         ]));
 
         $response->assertOk();

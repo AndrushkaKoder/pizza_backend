@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Product\ProductsInCartResource;
 use App\Http\Services\CartService;
 use App\Models\CartItems;
-use App\Models\User;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,25 +20,7 @@ class CartController extends Controller
      */
     public function getCart(): JsonResponse
     {
-        $user = Auth::user();
-        /**
-         * @var User|Authenticatable $user
-         */
-
-        $cartItems = $user->cart?->items;
-
-        if (!$cartItems) return response()->json();
-
-        $total = [
-            'data' => [
-                'total_price' => $user->cart->total_sum,
-                'quantity' => $cartItems->sum('quantity')
-            ]
-        ];
-
-        $total['data']['products'] = ProductsInCartResource::collection($cartItems);
-
-        return response()->json($total['data']['total_price'] > 0 ? $total : []);
+        return response()->json($this->cartService->getCart());
     }
 
     public function addToCart(int $productId): JsonResponse

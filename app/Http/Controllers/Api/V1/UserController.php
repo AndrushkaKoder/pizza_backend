@@ -15,11 +15,20 @@ class UserController extends Controller
 
     use InputDataHandlerTrait;
 
+    /**
+     * @return UserResource
+     * Получить текущего авторизованного юзера
+     */
     public function index(): UserResource
     {
         return (new UserResource(Auth::user()));
     }
 
+    /**
+     * @param UpdateUser $request
+     * @return JsonResponse
+     * Обновить юзера
+     */
     public function update(UpdateUser $request): JsonResponse
     {
         $user = Auth::user();
@@ -50,6 +59,10 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     * Удалить юзера
+     */
     public function delete(): JsonResponse
     {
         $user = Auth::user();
@@ -61,6 +74,10 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     * Разлогинить юзера
+     */
     public function logout(): JsonResponse
     {
         $user = Auth::user();
