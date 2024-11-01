@@ -58,7 +58,7 @@ class OrdersController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Cart empty'
-            ]);
+            ], 400);
         }
 
         $created = DB::transaction(function () use ($request, $user) {

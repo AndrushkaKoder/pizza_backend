@@ -20,9 +20,13 @@ class UserRegisterTest extends TestCase
         $this->faker = Factory::create();
     }
 
+    /**
+     * @test
+     * @return void
+     */
     public function test_that_user_was_registered(): void
     {
-        $response = $this->post(route('register'), [
+        $response = $this->postJson(route('register'), [
             "name" => $this->faker->name,
             "email" => $this->faker->email,
             'phone' => $this->faker->phoneNumber,
@@ -33,8 +37,26 @@ class UserRegisterTest extends TestCase
         $response->assertStatus(201);
         $response->assertJsonStructure([
             "success",
-            "message"
+            "message",
+            "token"
         ]);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function test_that_register_password_must_be_confirmed(): void
+    {
+        $response = $this->postJson(route('register'), [
+            "name" => $this->faker->name,
+            "email" => $this->faker->email,
+            'phone' => $this->faker->phoneNumber,
+            "password" => 12345,
+            "password_confirmation" => null
+        ]);
+
+        $response->assertStatus(422);
     }
 
 }

@@ -32,4 +32,14 @@ class GetProductTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     * @return void
+     */
+    public function test_that_product_maybe_not_found(): void
+    {
+        $response = $this->get(route('products.show', ['id' => 100500]));
+        $response->assertStatus(404);
+    }
+
 }
