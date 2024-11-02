@@ -6,13 +6,15 @@ use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
-use Faker\Factory;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class CartTest extends TestCase
 {
+
+    use RefreshDatabase;
 
     private User|Authenticatable $user;
 
@@ -53,7 +55,7 @@ class CartTest extends TestCase
     public function test_that_deactivate_product_dont_add_to_cart(): void
     {
         $response = $this->post(route('cart.create', [
-            'product' =>  Product::factory()->create(['active' => false])->id
+            'product' => Product::factory()->create(['active' => false])->id
         ]));
 
         $response->assertStatus(400);
@@ -65,7 +67,6 @@ class CartTest extends TestCase
      */
     public function test_that_cant_add_more_products_than_specified_in_category(): void
     {
-
         $product = Product::factory()->create();
         $category = Category::factory()->create(['max_for_order' => 10]);
         $category->products()->sync($product->id);
@@ -77,14 +78,13 @@ class CartTest extends TestCase
 
         $cart->items()->create([
             'product_id' => $product->id,
-            'quantity' => 11,
+            'quantity' => 10,
             'price' => $product->getPrice()
         ]);
 
-        $response = $this->post(route('cart.create', [
-            'product' =>  $product->id
+        $response = $this->postJson(route('cart.create', [
+            'product' => $product->id
         ]));
-
 
         $response->assertStatus(400);
     }

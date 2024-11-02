@@ -42,13 +42,12 @@ class CartController extends Controller
     }
 
     /**
-     * @param int $productId
+     * @param Product $product
      * @return JsonResponse
      * Добавить товар в корзину
      */
-    public function addToCart(int $productId): JsonResponse
+    public function addToCart(Product $product): JsonResponse
     {
-        $product = Product::query()->findOrFail($productId);
         if (!$product->getPrice() || !$product->isActive()) {
             return response()->json([
                 'success' => false,

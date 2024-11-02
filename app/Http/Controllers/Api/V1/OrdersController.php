@@ -61,7 +61,7 @@ class OrdersController extends Controller
             ], 400);
         }
 
-        $created = DB::transaction(function () use ($request, $user) {
+        return DB::transaction(function () use ($request, $user) {
             try {
                 $order = $user->orders()->create([
                     'user_id' => Auth::id(),
@@ -84,20 +84,18 @@ class OrdersController extends Controller
                 $user->cart()->delete();
                 Cache::delete(Order::CACHE_NAME);
 
-                return [
+                return response()->json([
                     'success' => true,
                     'message' => 'success'
-                ];
+                ]);
 
             } catch (\Exception $exception) {
-                return [
+                return response()->json([
                     'success' => false,
                     'message' => $exception->getMessage()
-                ];
+                ]);
             }
         });
-
-        return response()->json($created, $created['success'] ? 201 : 400);
     }
 
     /**
