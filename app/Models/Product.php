@@ -92,6 +92,6 @@ class Product extends Model
 
     public function frontendPrice(int $price = null): string
     {
-        return ($price ?? $this->priceInteger()) . ' ₽';
+        return ($price ?? $this->getPrice()) . ' ₽';
     }
 }

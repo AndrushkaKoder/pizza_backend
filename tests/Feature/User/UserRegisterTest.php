@@ -2,36 +2,61 @@
 
 namespace Tests\Feature\User;
 
-use Illuminate\Support\Str;
+use Faker\Factory;
+use Faker\Generator;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class UserRegisterTest extends TestCase
 {
-    private array $userData = [];
+
+    use RefreshDatabase;
+
+    private Generator $faker;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->userData = [
-            "name" => "Test_" . Str::random(20),
-            "email" => Str::random(30) . '@gmail.com',
-            "phone" => "79" . str_repeat(rand(1000, 10000), 2),
-            "password" => 12345,
-            "password_confirmation" => 12345
-        ];
+        $this->faker = Factory::create();
     }
 
-    public function test_that_user_was_register(): void
+    /**
+     * @test
+     * @return void
+     */
+    public function test_that_user_was_registered(): void
     {
-        $response = $this->post(route('register'), $this->userData);
+        $response = $this->postJson(route('register'), [
+            "name" => $this->faker->name,
+            "email" => $this->faker->email,
+            'phone' => $this->faker->phoneNumber,
+            "password" => 12345,
+            "password_confirmation" => 12345
+        ]);
+
         $response->assertStatus(201);
         $response->assertJsonStructure([
             "success",
-            "message"
+            "message",
+            "token"
         ]);
     }
 
+    /**
+     * @test
+     * @return void
+     */
+    public function test_that_register_password_must_be_confirmed(): void
+    {
+        $response = $this->postJson(route('register'), [
+            "name" => $this->faker->name,
+            "email" => $this->faker->email,
+            'phone' => $this->faker->phoneNumber,
+            "password" => 12345,
+            "password_confirmation" => null
+        ]);
 
+        $response->assertStatus(422);
+    }
 
 }

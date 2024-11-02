@@ -51,4 +51,13 @@ class Cart extends Model
             'total_sum' => $this->total_sum > 0 ? $this->total_sum - $price : 0
         ]);
     }
+
+    public function deleteItem(CartItems $item): ?bool
+    {
+        $this->decreaseTotalSum($item->product->price);
+        $item->delete();
+        if (!$this->items->count()) $this->delete();
+
+        return true;
+    }
 }

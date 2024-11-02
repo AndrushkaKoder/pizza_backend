@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Orchid\Attachment\Attachable;
@@ -18,6 +19,7 @@ class User extends Authenticatable
     use HasFactory;
     use HasApiTokens;
     use Attachable;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -72,5 +74,10 @@ class User extends Authenticatable
     public function getAvatar(): ?string
     {
         return $this->attachments()->first()?->url();
+    }
+
+    public function isActive(): bool
+    {
+        return boolval($this->active);
     }
 }

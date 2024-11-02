@@ -11,7 +11,8 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::middleware('auth:sanctum')->controller(UserController::class)->group(function () {
     Route::get('/user', 'index')->name('user.index');
-    Route::put('/user/{user}', 'update')->name('user.update');
+    Route::put('/user/update', 'update')->name('user.update');
+    Route::delete('/user/delete', 'delete')->name('user.delete');
     Route::get('/user/logout', 'logout')->name('user.logout');
 });
 
