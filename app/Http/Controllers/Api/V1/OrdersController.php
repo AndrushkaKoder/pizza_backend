@@ -21,10 +21,6 @@ use Illuminate\Support\Facades\DB;
 class OrdersController extends Controller
 {
 
-    /**
-     * @return ResourceCollection
-     * Список заказов пользователя
-     */
     public function index(): ResourceCollection
     {
         return Cache::remember(Order::CACHE_NAME, Order::CACHE_TIME, function () {
@@ -33,21 +29,11 @@ class OrdersController extends Controller
         });
     }
 
-    /**
-     * @param Order $order
-     * @return OrderResource
-     * Заказ пользователя
-     */
     public function show(Order $order): OrderResource
     {
         return new OrderResource($order);
     }
 
-    /**
-     * @param CreateOrder $request
-     * @return JsonResponse
-     * Создать новый заказ
-     */
     public function create(CreateOrder $request): JsonResponse
     {
         $user = Auth::user();
@@ -87,7 +73,7 @@ class OrdersController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'success'
-                ]);
+                ], 201);
 
             } catch (\Exception $exception) {
                 return response()->json([

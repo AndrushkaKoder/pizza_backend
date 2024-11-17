@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Helpers\InputDataHandlerTrait;
+use App\Helpers\PhoneNumberHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginRequest;
 use App\Http\Requests\User\RegisterRequest;
@@ -14,47 +14,37 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-
-    use InputDataHandlerTrait;
-
-    /**
-     * @param RegisterRequest $request
-     * @return JsonResponse
-     */
     public function register(RegisterRequest $request): JsonResponse
     {
-        if ($phone = $request->input('phone')) {
-            if (User::query()->wherePhone($this->normalizePhoneNumber($phone))->count()) {
-                return response()->json([
-                    'message' => 'Number already exists',
-                    'errors' => [
-                        'phone' => ['Number already exists']
-                    ]
-                ], 400);
-            }
+        $validatedData = $request->validated();
+        $userPhone = (new PhoneNumberHandler($validatedData['phone']))->normalizeFormat();
+
+        if (User::query()->wherePhone($userPhone)->count()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Number already exists',
+                'errors' => [
+                    'phone' => ['Number already exists']
+                ]
+            ], 400);
         }
 
         $user = new User([
-            'name' => $request->validated('name'),
-            'email' => $request->validated('email'),
-            'phone' => $this->normalizePhoneNumber($request->validated('phone')),
-            'password' => $request->validated('password')
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'phone' => $userPhone,
+            'password' => $validatedData['password']
         ]);
         $user->save();
 
-        Auth::login($user);
-
         return response()->json([
             'success' => true,
-            'message' => new UserResource($user),
+            'user' => new UserResource($user),
             'token' => $user->createToken('auth')->plainTextToken
         ], 201);
     }
 
-    /**
-     * @param LoginRequest $request
-     * @return JsonResponse
-     */
+
     public function login(LoginRequest $request): JsonResponse
     {
         if (!Auth::attempt($request->validated())) {
@@ -77,7 +67,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'success',
+            'message' => 'success authenticate',
             'token' => $user->createToken('auth')->plainTextToken
         ]);
     }

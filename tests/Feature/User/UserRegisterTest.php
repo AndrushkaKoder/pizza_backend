@@ -37,7 +37,7 @@ class UserRegisterTest extends TestCase
         $response->assertStatus(201);
         $response->assertJsonStructure([
             "success",
-            "message",
+            "user",
             "token"
         ]);
     }
