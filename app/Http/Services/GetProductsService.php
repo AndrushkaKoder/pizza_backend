@@ -35,6 +35,7 @@ class GetProductsService
      */
     public function getProduct(int $id): Product
     {
+
         if (Cache::has("product:{$id}")) {
             return Cache::get("product:{$id}");
         }
