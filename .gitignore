@@ -20,3 +20,4 @@ yarn-error.log
 /storage/app/public
 /storage/app/public/2024
 .env.testing
+composer.lock

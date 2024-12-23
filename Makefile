@@ -1,6 +1,5 @@
 up:
 	./vendor/bin/sail up -d
-	./vendor/bin/sail artisan optimize:clear
 
 migrate:
 	./vendor/bin/sail artisan migrate
