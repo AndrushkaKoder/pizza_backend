@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-   echo 'is api';
+   return response('Is pizza base backend', 200);
 });
