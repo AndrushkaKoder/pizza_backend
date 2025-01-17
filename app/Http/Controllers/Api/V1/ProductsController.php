@@ -3,27 +3,25 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Product\ProductsResource;
-use App\Http\Services\GetProductsService;
+use App\Http\Services\Products\ProductsRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductsController extends Controller
 {
-    public function __construct(private readonly GetProductsService $productsService)
+    public function __construct(private readonly ProductsRepository $productsService)
     {
     }
 
-    public function index(Request $request): JsonResource
+    public function index(Request $request): JsonResponse
     {
-        $products = $this->productsService->getProducts();
-        return ProductsResource::collection($this->filter($request, $products));
+       return new JsonResponse( $this->productsService->getProducts());
     }
 
-    public function show(int $id): ProductsResource
+    public function show(int $id): JsonResponse
     {
-        return new ProductsResource($this->productsService->getProduct($id));
+        return new JsonResponse($this->productsService->getProduct($id));
     }
 
     protected function filter(Request $request, Collection $products): Collection

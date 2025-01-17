@@ -1,5 +1,5 @@
 up:
-	./vendor/bin/sail up -d
+	./vendor/bin/sail up -d --remove-orphans
 
 migrate:
 	./vendor/bin/sail artisan migrate

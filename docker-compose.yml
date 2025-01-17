@@ -21,17 +21,19 @@ services:
             - '.:/var/www/html'
         networks:
             - sail
+            - pizza_network
         depends_on:
             - redis
             - pgsql
     redis:
         image: 'redis:alpine'
         ports:
-            - '${FORWARD_REDIS_PORT:-6379}:6379'
+            - '${FORWARD_REDIS_PORT:-6370}:6379'
         volumes:
             - 'sail-redis:/data'
         networks:
             - sail
+            - pizza_network
         healthcheck:
             test:
                 - CMD
@@ -53,6 +55,7 @@ services:
             - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
         networks:
             - sail
+            - pizza_network
         healthcheck:
             test:
                 - CMD
@@ -67,6 +70,8 @@ services:
 networks:
     sail:
         driver: bridge
+    pizza_network:
+            external: true
 volumes:
     sail-redis:
         driver: local
